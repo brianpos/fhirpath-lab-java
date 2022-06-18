@@ -12,10 +12,7 @@ import ca.uhn.fhir.rest.annotation.OperationParam;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.util.ParametersUtil;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,8 +21,6 @@ import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.TypeDetails;
 import org.hl7.fhir.r4.utils.FHIRPathEngine.IEvaluationContext;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.exceptions.FHIRException;
@@ -58,6 +53,7 @@ public class Evaluator {
       if (contextExpression != null)
         ParametersUtil.addPartString(ctx, paramsPart, "context", contextExpression);
       ParametersUtil.addPartString(ctx, paramsPart, "expression", expression);
+      ParametersUtil.addPartResource(ctx, paramsPart, "resource", resource);
 
       IFhirPath fhirPath = ctx.newFhirPath();
       // ca.uhn.fhir.parser.IParser parser = ctx.newJsonParser();
@@ -68,7 +64,7 @@ public class Evaluator {
       engine.setHostServices(services);
 
       // locate all of the context objects
-      Map<String, IBase> contextList = new HashMap<String, IBase>();
+      java.util.ArrayList<String> contextList = new java.util.ArrayList<String>();
       if (contextExpression != null) {
         List<IBase> contextOutputs;
         try {
@@ -79,21 +75,15 @@ public class Evaluator {
         }
 
         for (int i = 0; i < contextOutputs.size(); i++) {
-          IBase nextOutput = contextOutputs.get(i);
+          // IBase nextOutput = contextOutputs.get(i);
           String path = String.format("%s[%d]", contextExpression, i);
-          contextList.put(path, nextOutput);
-          // if (nextOutput instanceof IBaseResource) {
-          // ParametersUtil.addPartResource(ctx, resultPart, path, (IBaseResource)
-          // nextOutput);
-          // } else {
-          // ParametersUtil.addPart(ctx, resultPart, path, nextOutput);
-          // }
+          contextList.add(path);
         }
       } else {
-        contextList.put("", resource);
+        contextList.add("");
       }
 
-      for (String key : contextList.keySet()) {
+      for (String key : contextList) {
         String itemExpression = expression;
         if (key != "")
           itemExpression = String.format("%s.select(%s)", key, expression);
