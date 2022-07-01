@@ -70,7 +70,10 @@ public class Evaluator {
         paramsPart.addPart(variables);
         java.util.List<org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent> variableParts = variables.getPart();
         for (int i = 0; i < variableParts.size(); i++) {
-          services.mapVariables.put(variableParts.get(i).getName(), variableParts.get(i).getValue());
+          if (variableParts.get(i).getResource() != null)
+            services.mapVariables.put(variableParts.get(i).getName(), variableParts.get(i).getResource());
+          else
+            services.mapVariables.put(variableParts.get(i).getName(), variableParts.get(i).getValue());
         }
       }
 
