@@ -12,6 +12,7 @@ import ca.uhn.fhir.rest.annotation.OperationParam;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.util.ParametersUtil;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,14 +42,15 @@ public class Evaluator {
 
       @OperationParam(name = "resource", min = 1) IBaseResource resource,
       @OperationParam(name = "context") String contextExpression,
-      @OperationParam(name = "expression") String expression) {
+      @OperationParam(name = "expression") String expression,
+      @OperationParam(name = "variables") Parameters.ParametersParameterComponent variables) {
 
     IBaseParameters responseParameters = ParametersUtil.newInstance(ctx);
     responseParameters.setId("fhirpath");
 
     if (isNotBlank(expression)) {
       // echo the parameters used
-      IBase paramsPart = ParametersUtil.addParameterToParameters(ctx, responseParameters,
+      Parameters.ParametersParameterComponent paramsPart = (Parameters.ParametersParameterComponent)ParametersUtil.addParameterToParameters(ctx, responseParameters,
           "parameters");
       if (contextExpression != null)
         ParametersUtil.addPartString(ctx, paramsPart, "context", contextExpression);
@@ -62,6 +64,15 @@ public class Evaluator {
           new HapiWorkerContext(ctx, new DefaultProfileValidationSupport(ctx)));
       FHIRPathTestEvaluationServices services = new FHIRPathTestEvaluationServices();
       engine.setHostServices(services);
+
+      // pass through all the variables
+      if (variables != null){
+        paramsPart.addPart(variables);
+        java.util.List<org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent> variableParts = variables.getPart();
+        for (int i = 0; i < variableParts.size(); i++) {
+          services.mapVariables.put(variableParts.get(i).getName(), variableParts.get(i).getValue());
+        }
+      }
 
       // locate all of the context objects
       java.util.ArrayList<String> contextList = new java.util.ArrayList<String>();
@@ -122,12 +133,23 @@ public class Evaluator {
 
   private class FHIRPathTestEvaluationServices implements IEvaluationContext {
     public Parameters.ParametersParameterComponent traceToParameter;
+    public java.util.HashMap<String, org.hl7.fhir.r4.model.Base> mapVariables;
+
+    public FHIRPathTestEvaluationServices(){
+      mapVariables = new HashMap<String, org.hl7.fhir.r4.model.Base>();
+    }
 
     @Override
     public org.hl7.fhir.r4.model.Base resolveConstant(Object appContext, String name, boolean beforeContext)
         throws PathEngineException {
+      if (mapVariables != null) {
+        if (mapVariables.containsKey(name)) {
+          return mapVariables.get(name);
+        }
+        // return null; // don't return null as the lack of the variable being defined is an issue
+      }
       throw new NotImplementedException(
-          "Not done yet (FHIRPathTestEvaluationServices.resolveConstant), when item is element: " + name);
+          "Variable: `%" + name + "` was not provided");
     }
 
     @Override
@@ -146,11 +168,9 @@ public class Evaluator {
         for (IBase nextOutput : data) {
           if (nextOutput instanceof IBaseResource) {
             ParametersUtil.addPartResource(ctx, traceValue, nextOutput.fhirType(), (IBaseResource) nextOutput);
-          } 
-          else if (nextOutput instanceof org.hl7.fhir.r4.model.BackboneElement) {
+          } else if (nextOutput instanceof org.hl7.fhir.r4.model.BackboneElement) {
             ParametersUtil.addPart(ctx, traceValue, nextOutput.fhirType(), new StringType("<< Type Not Supported >>"));
-          } 
-          else {
+          } else {
             // if ( netOutput instanceOf org.hl7.fhir.r4.model.BackboneElement)
             try {
               ParametersUtil.addPart(ctx, traceValue, nextOutput.fhirType(), nextOutput);
