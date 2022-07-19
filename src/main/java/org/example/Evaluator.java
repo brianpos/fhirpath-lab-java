@@ -70,10 +70,18 @@ public class Evaluator {
         paramsPart.addPart(variables);
         java.util.List<org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent> variableParts = variables.getPart();
         for (int i = 0; i < variableParts.size(); i++) {
-          if (variableParts.get(i).getResource() != null)
-            services.mapVariables.put(variableParts.get(i).getName(), variableParts.get(i).getResource());
-          else
-            services.mapVariables.put(variableParts.get(i).getName(), variableParts.get(i).getValue());
+          org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent part = variableParts.get(i);
+          if (part.getResource() != null)
+            services.mapVariables.put(part.getName(), part.getResource());
+          else{
+            if (part.getExtensionByUrl("http://fhir.forms-lab.com/StructureDefinition/json-value") != null){
+              // this is not currently supported...
+              services.mapVariables.put(part.getName(), null);
+            }
+            else{
+              services.mapVariables.put(part.getName(), part.getValue());
+            }
+          }
         }
       }
 
