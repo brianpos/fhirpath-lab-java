@@ -30,7 +30,7 @@ import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.IBaseParameters;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
-public class Evaluator {
+public class EvaluatorHAPI {
 
   private FhirContext ctx = FhirContext.forR4();
 
