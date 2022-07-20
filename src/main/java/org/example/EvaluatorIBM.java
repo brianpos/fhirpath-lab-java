@@ -66,7 +66,7 @@ public class EvaluatorIBM {
       Parameters.ParametersParameterComponent paramsPart = (Parameters.ParametersParameterComponent) ParametersUtil
           .addParameterToParameters(ctx, responseParameters,
               "parameters");
-      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "IBM");
+      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "IBM-4.11.1");
       if (contextExpression != null)
         ParametersUtil.addPartString(ctx, paramsPart, "context", contextExpression);
       ParametersUtil.addPartString(ctx, paramsPart, "expression", expression);
