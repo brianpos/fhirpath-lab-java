@@ -69,6 +69,12 @@
       <version>6.0.1</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/com.ibm.fhir/fhir-path/4.11.1 -->
+    <dependency>
+      <groupId>com.ibm.fhir</groupId>
+      <artifactId>fhir-path</artifactId>
+      <version>4.11.1</version>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>

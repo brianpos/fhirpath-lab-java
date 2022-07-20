@@ -50,8 +50,10 @@ public class EvaluatorHAPI {
 
     if (isNotBlank(expression)) {
       // echo the parameters used
-      Parameters.ParametersParameterComponent paramsPart = (Parameters.ParametersParameterComponent)ParametersUtil.addParameterToParameters(ctx, responseParameters,
-          "parameters");
+      Parameters.ParametersParameterComponent paramsPart = (Parameters.ParametersParameterComponent) ParametersUtil
+          .addParameterToParameters(ctx, responseParameters,
+              "parameters");
+      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI");
       if (contextExpression != null)
         ParametersUtil.addPartString(ctx, paramsPart, "context", contextExpression);
       ParametersUtil.addPartString(ctx, paramsPart, "expression", expression);
@@ -66,19 +68,19 @@ public class EvaluatorHAPI {
       engine.setHostServices(services);
 
       // pass through all the variables
-      if (variables != null){
+      if (variables != null) {
         paramsPart.addPart(variables);
-        java.util.List<org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent> variableParts = variables.getPart();
+        java.util.List<org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent> variableParts = variables
+            .getPart();
         for (int i = 0; i < variableParts.size(); i++) {
           org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent part = variableParts.get(i);
           if (part.getResource() != null)
             services.mapVariables.put(part.getName(), part.getResource());
-          else{
-            if (part.getExtensionByUrl("http://fhir.forms-lab.com/StructureDefinition/json-value") != null){
+          else {
+            if (part.getExtensionByUrl("http://fhir.forms-lab.com/StructureDefinition/json-value") != null) {
               // this is not currently supported...
               services.mapVariables.put(part.getName(), null);
-            }
-            else{
+            } else {
               services.mapVariables.put(part.getName(), part.getValue());
             }
           }
@@ -146,7 +148,7 @@ public class EvaluatorHAPI {
     public Parameters.ParametersParameterComponent traceToParameter;
     public java.util.HashMap<String, org.hl7.fhir.r4.model.Base> mapVariables;
 
-    public FHIRPathTestEvaluationServices(){
+    public FHIRPathTestEvaluationServices() {
       mapVariables = new HashMap<String, org.hl7.fhir.r4.model.Base>();
     }
 
@@ -157,7 +159,8 @@ public class EvaluatorHAPI {
         if (mapVariables.containsKey(name)) {
           return mapVariables.get(name);
         }
-        // return null; // don't return null as the lack of the variable being defined is an issue
+        // return null; // don't return null as the lack of the variable being defined
+        // is an issue
       }
       throw new NotImplementedException(
           "Variable: `%" + name + "` was not provided");
