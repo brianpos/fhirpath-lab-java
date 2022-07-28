@@ -106,8 +106,8 @@ public class EvaluatorHAPI {
         Parameters.ParametersParameterComponent resultPart = (Parameters.ParametersParameterComponent) ParametersUtil
             .addParameterToParameters(ctx, responseParameters,
                 "result");
-        if (contextExpression != "")
-          resultPart.setValue(new StringType(String.format("%s[%d])", contextExpression, i)));
+        if (contextExpression != null)
+          resultPart.setValue(new StringType(String.format("%s[%d]", contextExpression, i)));
 
         List<org.hl7.fhir.r4.model.Base> outputs;
         try {
