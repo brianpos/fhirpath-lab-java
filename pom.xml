@@ -53,20 +53,20 @@
     <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
       <artifactId>hapi-fhir-server</artifactId>
-      <version>6.0.1</version>
+      <version>6.0.4</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/ca.uhn.hapi.fhir/hapi-fhir-structures-r4 -->
     <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
       <artifactId>hapi-fhir-structures-r4</artifactId>
-      <version>6.0.1</version>
+      <version>6.0.4</version>
     </dependency>
 
     <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
       <artifactId>hapi-fhir-validation</artifactId>
-      <version>6.0.1</version>
+      <version>6.0.4</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/com.ibm.fhir/fhir-path/4.11.1 -->

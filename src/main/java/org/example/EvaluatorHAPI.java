@@ -53,7 +53,7 @@ public class EvaluatorHAPI {
       Parameters.ParametersParameterComponent paramsPart = (Parameters.ParametersParameterComponent) ParametersUtil
           .addParameterToParameters(ctx, responseParameters,
               "parameters");
-      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.0.1");
+      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.0.4");
       if (contextExpression != null)
         ParametersUtil.addPartString(ctx, paramsPart, "context", contextExpression);
       ParametersUtil.addPartString(ctx, paramsPart, "expression", expression);
@@ -88,40 +88,31 @@ public class EvaluatorHAPI {
       }
 
       // locate all of the context objects
-      java.util.ArrayList<String> contextList = new java.util.ArrayList<String>();
+      List<IBase> contextOutputs;
       if (contextExpression != null) {
-        List<IBase> contextOutputs;
         try {
           contextOutputs = fhirPath.evaluate(resource, contextExpression, IBase.class);
         } catch (FhirPathExecutionException e) {
           throw new InvalidRequestException(
               Msg.code(327) + "Error parsing FHIRPath expression: " + e.getMessage());
         }
-
-        for (int i = 0; i < contextOutputs.size(); i++) {
-          // IBase nextOutput = contextOutputs.get(i);
-          String path = String.format("%s[%d]", contextExpression, i);
-          contextList.add(path);
-        }
       } else {
-        contextList.add("");
+        contextOutputs = new java.util.ArrayList<IBase>();
+        contextOutputs.add(resource);
       }
 
-      for (String key : contextList) {
-        String itemExpression = expression;
-        if (key != "")
-          itemExpression = String.format("%s.select(%s)", key, expression);
+      for (int i = 0; i < contextOutputs.size(); i++) {
+        org.hl7.fhir.r4.model.Base node = (org.hl7.fhir.r4.model.Base)contextOutputs.get(i);
         Parameters.ParametersParameterComponent resultPart = (Parameters.ParametersParameterComponent) ParametersUtil
             .addParameterToParameters(ctx, responseParameters,
                 "result");
-        if (key != "")
-          resultPart.setValue(new StringType(key));
+        if (contextExpression != "")
+          resultPart.setValue(new StringType(String.format("%s[%d])", contextExpression, i)));
 
         List<org.hl7.fhir.r4.model.Base> outputs;
         try {
           services.traceToParameter = resultPart;
-          // outputs = fhirPath.evaluate(resource, itemExpression, IBase.class);
-          outputs = engine.evaluate((org.hl7.fhir.r4.model.Base) resource, itemExpression);
+          outputs = engine.evaluate(node, expression);
         } catch (FhirPathExecutionException e) {
           throw new InvalidRequestException(
               Msg.code(327) + "Error parsing FHIRPath expression: " + e.getMessage());
