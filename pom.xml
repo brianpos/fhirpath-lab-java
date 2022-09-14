@@ -53,7 +53,7 @@
     <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
       <artifactId>hapi-fhir-server</artifactId>
-      <version>6.0.4</version>
+      <version>6.1.1</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/ca.uhn.hapi.fhir/hapi-fhir-structures-r4 -->
