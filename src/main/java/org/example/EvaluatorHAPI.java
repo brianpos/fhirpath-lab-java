@@ -53,7 +53,7 @@ public class EvaluatorHAPI {
       Parameters.ParametersParameterComponent paramsPart = (Parameters.ParametersParameterComponent) ParametersUtil
           .addParameterToParameters(ctx, responseParameters,
               "parameters");
-      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.1.1");
+      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.2.4");
       if (contextExpression != null)
         ParametersUtil.addPartString(ctx, paramsPart, "context", contextExpression);
       ParametersUtil.addPartString(ctx, paramsPart, "expression", expression);
@@ -144,11 +144,13 @@ public class EvaluatorHAPI {
     }
 
     @Override
-    public org.hl7.fhir.r4.model.Base resolveConstant(Object appContext, String name, boolean beforeContext)
+    public List<org.hl7.fhir.r4.model.Base> resolveConstant(Object appContext, String name, boolean beforeContext)
         throws PathEngineException {
       if (mapVariables != null) {
         if (mapVariables.containsKey(name)) {
-          return mapVariables.get(name);
+          List<org.hl7.fhir.r4.model.Base> result = new java.util.ArrayList<org.hl7.fhir.r4.model.Base>();
+          result.add(mapVariables.get(name));
+          return result;
         }
         // return null; // don't return null as the lack of the variable being defined
         // is an issue
