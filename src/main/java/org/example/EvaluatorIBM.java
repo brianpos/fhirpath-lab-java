@@ -12,11 +12,11 @@ import ca.uhn.fhir.util.ParametersUtil;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.hl7.fhir.r4.model.BooleanType;
-import org.hl7.fhir.r4.model.DecimalType;
-import org.hl7.fhir.r4.model.IntegerType;
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4b.model.BooleanType;
+import org.hl7.fhir.r4b.model.DecimalType;
+import org.hl7.fhir.r4b.model.IntegerType;
+import org.hl7.fhir.r4b.model.Parameters;
+import org.hl7.fhir.r4b.model.StringType;
 import org.hl7.fhir.instance.model.api.IBaseParameters;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
@@ -44,7 +44,7 @@ import com.ibm.fhir.model.resource.Resource;
 
 public class EvaluatorIBM {
 
-  private FhirContext ctx = FhirContext.forR4();
+  private FhirContext ctx = FhirContext.forR4B();
 
   @Operation(name = "fhirpath-ibm", idempotent = true, returnParameters = {
       @OperationParam(name = "resource", min = 1),
@@ -117,10 +117,10 @@ public class EvaluatorIBM {
 
           // TODO: Add the Variables
           if (hapiVariables != null) {
-            java.util.List<org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent> variableParts = hapiVariables
+            java.util.List<org.hl7.fhir.r4b.model.Parameters.ParametersParameterComponent> variableParts = hapiVariables
                 .getPart();
             for (int i = 0; i < variableParts.size(); i++) {
-              org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent part = variableParts.get(i);
+              org.hl7.fhir.r4b.model.Parameters.ParametersParameterComponent part = variableParts.get(i);
               if (part.getResource() != null) {
                 String jsonVarResource = hapiParser.encodeResourceToString(part.getResource());
                 StringReader srVar = new StringReader(jsonVarResource);
@@ -247,65 +247,65 @@ public class EvaluatorIBM {
     return false;
   }
 
-  private org.hl7.fhir.r4.model.Type ConvertPrimitiveValue(com.ibm.fhir.model.type.Element element) {
+  private org.hl7.fhir.r4b.model.DataType ConvertPrimitiveValue(com.ibm.fhir.model.type.Element element) {
     // do subtypes of string first
     if (element instanceof com.ibm.fhir.model.type.Id)
-      return new org.hl7.fhir.r4.model.IdType(((com.ibm.fhir.model.type.String) element).getValue());
+      return new org.hl7.fhir.r4b.model.IdType(((com.ibm.fhir.model.type.String) element).getValue());
     if (element instanceof com.ibm.fhir.model.type.Code)
-      return new org.hl7.fhir.r4.model.CodeType(((com.ibm.fhir.model.type.String) element).getValue());
+      return new org.hl7.fhir.r4b.model.CodeType(((com.ibm.fhir.model.type.String) element).getValue());
     if (element instanceof com.ibm.fhir.model.type.Markdown)
-      return new org.hl7.fhir.r4.model.MarkdownType(((com.ibm.fhir.model.type.String) element).getValue());
+      return new org.hl7.fhir.r4b.model.MarkdownType(((com.ibm.fhir.model.type.String) element).getValue());
     // then string itself
     if (element instanceof com.ibm.fhir.model.type.String)
-      return new org.hl7.fhir.r4.model.StringType(((com.ibm.fhir.model.type.String) element).getValue());
+      return new org.hl7.fhir.r4b.model.StringType(((com.ibm.fhir.model.type.String) element).getValue());
 
     // date
     if (element instanceof com.ibm.fhir.model.type.Date)
-      return new org.hl7.fhir.r4.model.DateType(((com.ibm.fhir.model.type.Date) element).getValue().toString());
+      return new org.hl7.fhir.r4b.model.DateType(((com.ibm.fhir.model.type.Date) element).getValue().toString());
 
     // datetime
     if (element instanceof com.ibm.fhir.model.type.DateTime)
-      return new org.hl7.fhir.r4.model.DateTimeType(((com.ibm.fhir.model.type.DateTime) element).getValue().toString());
+      return new org.hl7.fhir.r4b.model.DateTimeType(((com.ibm.fhir.model.type.DateTime) element).getValue().toString());
 
     // instance
     if (element instanceof com.ibm.fhir.model.type.Instant)
-      return new org.hl7.fhir.r4.model.InstantType(((com.ibm.fhir.model.type.Instant) element).getValue().toString());
+      return new org.hl7.fhir.r4b.model.InstantType(((com.ibm.fhir.model.type.Instant) element).getValue().toString());
 
     // time
     if (element instanceof com.ibm.fhir.model.type.Time)
-      return new org.hl7.fhir.r4.model.TimeType(((com.ibm.fhir.model.type.Time) element).getValue().toString());
+      return new org.hl7.fhir.r4b.model.TimeType(((com.ibm.fhir.model.type.Time) element).getValue().toString());
 
     // decimal
     if (element instanceof com.ibm.fhir.model.type.Decimal)
-      return new org.hl7.fhir.r4.model.DecimalType(((com.ibm.fhir.model.type.Decimal) element).getValue().toString());
+      return new org.hl7.fhir.r4b.model.DecimalType(((com.ibm.fhir.model.type.Decimal) element).getValue().toString());
 
     if (element instanceof com.ibm.fhir.model.type.PositiveInt)
-      return new org.hl7.fhir.r4.model.PositiveIntType(
+      return new org.hl7.fhir.r4b.model.PositiveIntType(
           ((com.ibm.fhir.model.type.PositiveInt) element).getValue().toString());
     if (element instanceof com.ibm.fhir.model.type.UnsignedInt)
-      return new org.hl7.fhir.r4.model.UnsignedIntType(
+      return new org.hl7.fhir.r4b.model.UnsignedIntType(
           ((com.ibm.fhir.model.type.UnsignedInt) element).getValue().toString());
     if (element instanceof com.ibm.fhir.model.type.Integer)
-      return new org.hl7.fhir.r4.model.IntegerType(((com.ibm.fhir.model.type.Integer) element).getValue().toString());
+      return new org.hl7.fhir.r4b.model.IntegerType(((com.ibm.fhir.model.type.Integer) element).getValue().toString());
 
     // boolean
     if (element instanceof com.ibm.fhir.model.type.Boolean)
-      return new org.hl7.fhir.r4.model.BooleanType(((com.ibm.fhir.model.type.Boolean) element).getValue());
+      return new org.hl7.fhir.r4b.model.BooleanType(((com.ibm.fhir.model.type.Boolean) element).getValue());
 
     // base64binary
     if (element instanceof com.ibm.fhir.model.type.Base64Binary)
-      return new org.hl7.fhir.r4.model.Base64BinaryType(((com.ibm.fhir.model.type.Base64Binary) element).getValue());
+      return new org.hl7.fhir.r4b.model.Base64BinaryType(((com.ibm.fhir.model.type.Base64Binary) element).getValue());
 
     // do subtypes of Uri first
     if (element instanceof com.ibm.fhir.model.type.Canonical)
-      return new org.hl7.fhir.r4.model.CanonicalType(((com.ibm.fhir.model.type.Uri) element).getValue());
+      return new org.hl7.fhir.r4b.model.CanonicalType(((com.ibm.fhir.model.type.Uri) element).getValue());
     if (element instanceof com.ibm.fhir.model.type.Oid)
-      return new org.hl7.fhir.r4.model.OidType(((com.ibm.fhir.model.type.Uri) element).getValue());
+      return new org.hl7.fhir.r4b.model.OidType(((com.ibm.fhir.model.type.Uri) element).getValue());
     if (element instanceof com.ibm.fhir.model.type.Uuid)
-      return new org.hl7.fhir.r4.model.UuidType(((com.ibm.fhir.model.type.Uri) element).getValue());
+      return new org.hl7.fhir.r4b.model.UuidType(((com.ibm.fhir.model.type.Uri) element).getValue());
     // then the uri itself
     if (element instanceof com.ibm.fhir.model.type.Uri)
-      return new org.hl7.fhir.r4.model.UriType(((com.ibm.fhir.model.type.Uri) element).getValue());
+      return new org.hl7.fhir.r4b.model.UriType(((com.ibm.fhir.model.type.Uri) element).getValue());
 
     // should never get here anyway ;)
     return null;

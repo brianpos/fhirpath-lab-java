@@ -17,11 +17,11 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.hl7.fhir.r4.hapi.ctx.HapiWorkerContext;
-import org.hl7.fhir.r4.model.Parameters;
-import org.hl7.fhir.r4.model.StringType;
-import org.hl7.fhir.r4.model.TypeDetails;
-import org.hl7.fhir.r4.utils.FHIRPathEngine.IEvaluationContext;
+import org.hl7.fhir.r4b.hapi.ctx.HapiWorkerContext;
+import org.hl7.fhir.r4b.model.Parameters;
+import org.hl7.fhir.r4b.model.StringType;
+import org.hl7.fhir.r4b.model.TypeDetails;
+import org.hl7.fhir.r4b.utils.FHIRPathEngine.IEvaluationContext;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.exceptions.FHIRException;
@@ -32,7 +32,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 
 public class EvaluatorHAPI {
 
-  private FhirContext ctx = FhirContext.forR4();
+  private FhirContext ctx = FhirContext.forR4B();
 
   @Operation(name = "fhirpath", idempotent = true, returnParameters = {
       @OperationParam(name = "resource", min = 1),
@@ -53,7 +53,7 @@ public class EvaluatorHAPI {
       Parameters.ParametersParameterComponent paramsPart = (Parameters.ParametersParameterComponent) ParametersUtil
           .addParameterToParameters(ctx, responseParameters,
               "parameters");
-      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.2.4");
+      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.2.4 (r4b)");
       if (contextExpression != null)
         ParametersUtil.addPartString(ctx, paramsPart, "context", contextExpression);
       ParametersUtil.addPartString(ctx, paramsPart, "expression", expression);
@@ -62,7 +62,7 @@ public class EvaluatorHAPI {
       IFhirPath fhirPath = ctx.newFhirPath();
       // ca.uhn.fhir.parser.IParser parser = ctx.newJsonParser();
 
-      org.hl7.fhir.r4.utils.FHIRPathEngine engine = new org.hl7.fhir.r4.utils.FHIRPathEngine(
+      org.hl7.fhir.r4b.utils.FHIRPathEngine engine = new org.hl7.fhir.r4b.utils.FHIRPathEngine(
           new HapiWorkerContext(ctx, new DefaultProfileValidationSupport(ctx)));
       FHIRPathTestEvaluationServices services = new FHIRPathTestEvaluationServices();
       engine.setHostServices(services);
@@ -70,10 +70,10 @@ public class EvaluatorHAPI {
       // pass through all the variables
       if (variables != null) {
         paramsPart.addPart(variables);
-        java.util.List<org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent> variableParts = variables
+        java.util.List<org.hl7.fhir.r4b.model.Parameters.ParametersParameterComponent> variableParts = variables
             .getPart();
         for (int i = 0; i < variableParts.size(); i++) {
-          org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent part = variableParts.get(i);
+          org.hl7.fhir.r4b.model.Parameters.ParametersParameterComponent part = variableParts.get(i);
           if (part.getResource() != null)
             services.mapVariables.put(part.getName(), part.getResource());
           else {
@@ -102,14 +102,14 @@ public class EvaluatorHAPI {
       }
 
       for (int i = 0; i < contextOutputs.size(); i++) {
-        org.hl7.fhir.r4.model.Base node = (org.hl7.fhir.r4.model.Base)contextOutputs.get(i);
+        org.hl7.fhir.r4b.model.Base node = (org.hl7.fhir.r4b.model.Base)contextOutputs.get(i);
         Parameters.ParametersParameterComponent resultPart = (Parameters.ParametersParameterComponent) ParametersUtil
             .addParameterToParameters(ctx, responseParameters,
                 "result");
         if (contextExpression != null)
           resultPart.setValue(new StringType(String.format("%s[%d]", contextExpression, i)));
 
-        List<org.hl7.fhir.r4.model.Base> outputs;
+        List<org.hl7.fhir.r4b.model.Base> outputs;
         try {
           services.traceToParameter = resultPart;
           outputs = engine.evaluate(node, expression);
@@ -137,18 +137,18 @@ public class EvaluatorHAPI {
 
   private class FHIRPathTestEvaluationServices implements IEvaluationContext {
     public Parameters.ParametersParameterComponent traceToParameter;
-    public java.util.HashMap<String, org.hl7.fhir.r4.model.Base> mapVariables;
+    public java.util.HashMap<String, org.hl7.fhir.r4b.model.Base> mapVariables;
 
     public FHIRPathTestEvaluationServices() {
-      mapVariables = new HashMap<String, org.hl7.fhir.r4.model.Base>();
+      mapVariables = new HashMap<String, org.hl7.fhir.r4b.model.Base>();
     }
 
     @Override
-    public List<org.hl7.fhir.r4.model.Base> resolveConstant(Object appContext, String name, boolean beforeContext)
+    public List<org.hl7.fhir.r4b.model.Base> resolveConstant(Object appContext, String name, boolean beforeContext)
         throws PathEngineException {
       if (mapVariables != null) {
         if (mapVariables.containsKey(name)) {
-          List<org.hl7.fhir.r4.model.Base> result = new java.util.ArrayList<org.hl7.fhir.r4.model.Base>();
+          List<org.hl7.fhir.r4b.model.Base> result = new java.util.ArrayList<org.hl7.fhir.r4b.model.Base>();
           result.add(mapVariables.get(name));
           return result;
         }
@@ -166,7 +166,7 @@ public class EvaluatorHAPI {
     }
 
     @Override
-    public boolean log(String argument, List<org.hl7.fhir.r4.model.Base> data) {
+    public boolean log(String argument, List<org.hl7.fhir.r4b.model.Base> data) {
       if (traceToParameter != null) {
         Parameters.ParametersParameterComponent traceValue = traceToParameter.addPart();
         traceValue.setName("trace");
@@ -175,10 +175,10 @@ public class EvaluatorHAPI {
         for (IBase nextOutput : data) {
           if (nextOutput instanceof IBaseResource) {
             ParametersUtil.addPartResource(ctx, traceValue, nextOutput.fhirType(), (IBaseResource) nextOutput);
-          } else if (nextOutput instanceof org.hl7.fhir.r4.model.BackboneElement) {
+          } else if (nextOutput instanceof org.hl7.fhir.r4b.model.BackboneElement) {
             ParametersUtil.addPart(ctx, traceValue, nextOutput.fhirType(), new StringType("<< Type Not Supported >>"));
           } else {
-            // if ( netOutput instanceOf org.hl7.fhir.r4.model.BackboneElement)
+            // if ( netOutput instanceOf org.hl7.fhir.r4b.model.BackboneElement)
             try {
               ParametersUtil.addPart(ctx, traceValue, nextOutput.fhirType(), nextOutput);
             } catch (java.lang.IllegalArgumentException e) {
@@ -207,20 +207,20 @@ public class EvaluatorHAPI {
     }
 
     @Override
-    public List<org.hl7.fhir.r4.model.Base> executeFunction(Object appContext, List<org.hl7.fhir.r4.model.Base> focus,
-        String functionName, List<List<org.hl7.fhir.r4.model.Base>> parameters) {
+    public List<org.hl7.fhir.r4b.model.Base> executeFunction(Object appContext, List<org.hl7.fhir.r4b.model.Base> focus,
+        String functionName, List<List<org.hl7.fhir.r4b.model.Base>> parameters) {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices.executeFunction), when item is element: " + functionName);
     }
 
     @Override
-    public org.hl7.fhir.r4.model.Base resolveReference(Object appContext, String url) throws FHIRException {
+    public org.hl7.fhir.r4b.model.Base resolveReference(Object appContext, String url, org.hl7.fhir.r4b.model.Base refContext) throws FHIRException {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices.resolveReference), when item is element");
     }
 
     @Override
-    public boolean conformsToProfile(Object appContext, org.hl7.fhir.r4.model.Base item, String url)
+    public boolean conformsToProfile(Object appContext, org.hl7.fhir.r4b.model.Base item, String url)
         throws FHIRException {
       // if (url.equals("http://hl7.org/fhir/StructureDefinition/Patient"))
       // return true;
@@ -230,7 +230,7 @@ public class EvaluatorHAPI {
     }
 
     @Override
-    public org.hl7.fhir.r4.model.ValueSet resolveValueSet(Object appContext, String url) {
+    public org.hl7.fhir.r4b.model.ValueSet resolveValueSet(Object appContext, String url) {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices.resolveReference), when item is element");
     }

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class FhirService extends RestfulServer {
 
   public FhirService() {
-    super(FhirContext.forR4());
+    super(FhirContext.forR4B());
 
     registerProvider(new EvaluatorHAPI());
     registerProvider(new EvaluatorIBM());

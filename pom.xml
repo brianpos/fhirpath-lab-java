@@ -59,7 +59,7 @@
     <!-- https://mvnrepository.com/artifact/ca.uhn.hapi.fhir/hapi-fhir-structures-r4 -->
     <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
-      <artifactId>hapi-fhir-structures-r4</artifactId>
+      <artifactId>hapi-fhir-structures-r4b</artifactId>
       <version>6.2.4</version>
     </dependency>
 
