@@ -53,7 +53,7 @@ public class EvaluatorHAPI {
       Parameters.ParametersParameterComponent paramsPart = (Parameters.ParametersParameterComponent) ParametersUtil
           .addParameterToParameters(ctx, responseParameters,
               "parameters");
-      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.4.2 (r4b)");
+      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.4.4 (r4b)");
       if (contextExpression != null)
         ParametersUtil.addPartString(ctx, paramsPart, "context", contextExpression);
       ParametersUtil.addPartString(ctx, paramsPart, "expression", expression);
