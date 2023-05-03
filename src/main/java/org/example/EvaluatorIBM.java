@@ -185,24 +185,28 @@ public class EvaluatorIBM {
               resultPart.addPart(part);
             } else if (node instanceof FHIRPathSystemValue) {
               FHIRPathSystemValue sv = node.asSystemValue();
-              if (sv.isStringValue())
+              if (sv.isStringValue()) {
+                if (sv.asStringValue().string() == "")
+                  ParametersUtil.addPart(ctx, resultPart, "empty-string",
+                      new org.hl7.fhir.r4b.model.StringType(sv.asStringValue().string()));
+                else
+                  ParametersUtil.addPart(ctx, resultPart, node.type().name(),
+                      new org.hl7.fhir.r4b.model.StringType(sv.asStringValue().string()));
+              } else if (sv.isBooleanValue())
                 ParametersUtil.addPart(ctx, resultPart, node.type().name(),
-                    new org.hl7.fhir.r4.model.StringType(sv.asStringValue().string()));
-              else if (sv.isBooleanValue())
-                ParametersUtil.addPart(ctx, resultPart, node.type().name(),
-                    new org.hl7.fhir.r4.model.BooleanType(sv.asBooleanValue()._boolean()));
+                    new org.hl7.fhir.r4b.model.BooleanType(sv.asBooleanValue()._boolean()));
               else if (sv.isNumberValue()) {
                 FHIRPathNumberValue nv = sv.asNumberValue();
                 if (nv.isDecimalValue())
                   ParametersUtil.addPart(ctx, resultPart, node.type().name(),
-                      new org.hl7.fhir.r4.model.DecimalType(nv.decimal()));
+                      new org.hl7.fhir.r4b.model.DecimalType(nv.decimal()));
                 if (nv.isIntegerValue())
                   ParametersUtil.addPart(ctx, resultPart, node.type().name(),
-                      new org.hl7.fhir.r4.model.IntegerType(nv.number().longValue()));
+                      new org.hl7.fhir.r4b.model.IntegerType(nv.number().longValue()));
               } else {
                 // unknown value
                 ParametersUtil.addPart(ctx, resultPart, node.type().name(),
-                    new org.hl7.fhir.r4.model.StringType(sv.asStringValue().string()));
+                    new org.hl7.fhir.r4b.model.StringType(sv.asStringValue().string()));
               }
             } else {
               try {
@@ -265,7 +269,8 @@ public class EvaluatorIBM {
 
     // datetime
     if (element instanceof com.ibm.fhir.model.type.DateTime)
-      return new org.hl7.fhir.r4b.model.DateTimeType(((com.ibm.fhir.model.type.DateTime) element).getValue().toString());
+      return new org.hl7.fhir.r4b.model.DateTimeType(
+          ((com.ibm.fhir.model.type.DateTime) element).getValue().toString());
 
     // instance
     if (element instanceof com.ibm.fhir.model.type.Instant)

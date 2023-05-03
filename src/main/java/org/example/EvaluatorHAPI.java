@@ -102,7 +102,7 @@ public class EvaluatorHAPI {
       }
 
       for (int i = 0; i < contextOutputs.size(); i++) {
-        org.hl7.fhir.r4b.model.Base node = (org.hl7.fhir.r4b.model.Base)contextOutputs.get(i);
+        org.hl7.fhir.r4b.model.Base node = (org.hl7.fhir.r4b.model.Base) contextOutputs.get(i);
         Parameters.ParametersParameterComponent resultPart = (Parameters.ParametersParameterComponent) ParametersUtil
             .addParameterToParameters(ctx, responseParameters,
                 "result");
@@ -123,7 +123,15 @@ public class EvaluatorHAPI {
             ParametersUtil.addPartResource(ctx, resultPart, nextOutput.fhirType(), (IBaseResource) nextOutput);
           } else {
             try {
-              ParametersUtil.addPart(ctx, resultPart, nextOutput.fhirType(), nextOutput);
+              if (nextOutput instanceof StringType) {
+                StringType st = (StringType) nextOutput;
+                if (st.getValue() == "")
+                  ParametersUtil.addPart(ctx, resultPart, "empty-string", nextOutput);
+                else
+                  ParametersUtil.addPart(ctx, resultPart, nextOutput.fhirType(), nextOutput);
+              } else {
+                ParametersUtil.addPart(ctx, resultPart, nextOutput.fhirType(), nextOutput);
+              }
             } catch (java.lang.IllegalArgumentException e) {
               // ParametersUtil.addParameterToParameters(ctx, resultPart,
               // nextOutput.fhirType());
@@ -180,7 +188,16 @@ public class EvaluatorHAPI {
           } else {
             // if ( netOutput instanceOf org.hl7.fhir.r4b.model.BackboneElement)
             try {
-              ParametersUtil.addPart(ctx, traceValue, nextOutput.fhirType(), nextOutput);
+              if (nextOutput instanceof StringType) {
+                StringType st = (StringType) nextOutput;
+                if (st.getValue() == "")
+                  ParametersUtil.addPart(ctx, traceValue, "empty-string", nextOutput);
+                else
+                  ParametersUtil.addPart(ctx, traceValue, nextOutput.fhirType(), nextOutput);
+              } else {
+                ParametersUtil.addPart(ctx, traceValue, nextOutput.fhirType(), nextOutput);
+              }
+              // ParametersUtil.addPart(ctx, traceValue, nextOutput.fhirType(), nextOutput);
             } catch (java.lang.IllegalArgumentException e) {
               // ParametersUtil.addParameterToParameters(ctx, resultPart,
               // nextOutput.fhirType());
@@ -214,7 +231,8 @@ public class EvaluatorHAPI {
     }
 
     @Override
-    public org.hl7.fhir.r4b.model.Base resolveReference(Object appContext, String url, org.hl7.fhir.r4b.model.Base refContext) throws FHIRException {
+    public org.hl7.fhir.r4b.model.Base resolveReference(Object appContext, String url,
+        org.hl7.fhir.r4b.model.Base refContext) throws FHIRException {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices.resolveReference), when item is element");
     }
