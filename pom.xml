@@ -76,6 +76,18 @@
       <version>6.4.4</version>
     </dependency>
 
+    <dependency>
+      <groupId>ca.uhn.hapi.fhir</groupId>
+      <artifactId>hapi-fhir-validation-resources-r4b</artifactId>
+      <version>6.4.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>ca.uhn.hapi.fhir</groupId>
+      <artifactId>hapi-fhir-validation-resources-r5</artifactId>
+      <version>6.4.4</version>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/com.ibm.fhir/fhir-path/4.11.1 -->
     <dependency>
       <groupId>com.ibm.fhir</groupId>
