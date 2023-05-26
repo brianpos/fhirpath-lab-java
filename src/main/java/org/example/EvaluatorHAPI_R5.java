@@ -33,6 +33,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 public class EvaluatorHAPI_R5 {
 
   private FhirContext ctx = FhirContext.forR5();
+  private HapiWorkerContext _workerContext = new HapiWorkerContext(ctx, new DefaultProfileValidationSupport(ctx));
 
   @Operation(name = "fhirpath-r5", idempotent = true, returnParameters = {
       @OperationParam(name = "resource", min = 1),
@@ -63,7 +64,7 @@ public class EvaluatorHAPI_R5 {
       // ca.uhn.fhir.parser.IParser parser = ctx.newJsonParser();
 
       org.hl7.fhir.r5.utils.FHIRPathEngine engine = new org.hl7.fhir.r5.utils.FHIRPathEngine(
-          new HapiWorkerContext(ctx, new DefaultProfileValidationSupport(ctx)));
+        _workerContext);
       FHIRPathTestEvaluationServices_R5 services = new FHIRPathTestEvaluationServices_R5();
       engine.setHostServices(services);
 
