@@ -54,7 +54,7 @@ public class EvaluatorHAPI_R5 {
       Parameters.ParametersParameterComponent paramsPart = (Parameters.ParametersParameterComponent) ParametersUtil
           .addParameterToParameters(ctx, responseParameters,
               "parameters");
-      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.4.4 (r5)");
+      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.6.1 (r5)");
       if (contextExpression != null)
         ParametersUtil.addPartString(ctx, paramsPart, "context", contextExpression);
       ParametersUtil.addPartString(ctx, paramsPart, "expression", expression);
