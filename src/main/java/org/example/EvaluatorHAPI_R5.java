@@ -54,7 +54,7 @@ public class EvaluatorHAPI_R5 {
       Parameters.ParametersParameterComponent paramsPart = (Parameters.ParametersParameterComponent) ParametersUtil
           .addParameterToParameters(ctx, responseParameters,
               "parameters");
-      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.6.1 (r5)");
+      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.6.2 (r5)");
       if (contextExpression != null)
         ParametersUtil.addPartString(ctx, paramsPart, "context", contextExpression);
       ParametersUtil.addPartString(ctx, paramsPart, "expression", expression);
@@ -113,7 +113,7 @@ public class EvaluatorHAPI_R5 {
         List<org.hl7.fhir.r5.model.Base> outputs;
         try {
           services.traceToParameter = resultPart;
-          outputs = engine.evaluate(node, expression);
+          outputs = engine.evaluate(ctx, (org.hl7.fhir.r5.model.Resource)resource, (org.hl7.fhir.r5.model.Resource)resource, node, expression);
         } catch (FhirPathExecutionException e) {
           throw new InvalidRequestException(
               Msg.code(327) + "Error parsing FHIRPath expression: " + e.getMessage());

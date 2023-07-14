@@ -53,39 +53,39 @@
     <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
       <artifactId>hapi-fhir-server</artifactId>
-      <version>6.6.1</version>
+      <version>6.6.2</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/ca.uhn.hapi.fhir/hapi-fhir-structures-r4 -->
     <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
       <artifactId>hapi-fhir-structures-r4b</artifactId>
-      <version>6.6.1</version>
+      <version>6.6.2</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/ca.uhn.hapi.fhir/hapi-fhir-structures-r5 -->
     <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
       <artifactId>hapi-fhir-structures-r5</artifactId>
-      <version>6.6.1</version>
+      <version>6.6.2</version>
     </dependency>
 
     <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
       <artifactId>hapi-fhir-validation</artifactId>
-      <version>6.6.1</version>
+      <version>6.6.2</version>
     </dependency>
 
     <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
       <artifactId>hapi-fhir-validation-resources-r4b</artifactId>
-      <version>6.6.1</version>
+      <version>6.6.2</version>
     </dependency>
 
     <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
       <artifactId>hapi-fhir-validation-resources-r5</artifactId>
-      <version>6.6.1</version>
+      <version>6.6.2</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/com.ibm.fhir/fhir-path/4.11.1 -->
