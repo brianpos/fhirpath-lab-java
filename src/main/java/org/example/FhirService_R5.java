@@ -9,13 +9,12 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class FhirService extends RestfulServer {
+public class FhirService_R5 extends RestfulServer {
 
-  public FhirService() {
-    super(FhirContext.forR4B());
+  public FhirService_R5() {
+    super(FhirContext.forR5());
 
-    registerProvider(new EvaluatorHAPI());
-    registerProvider(new EvaluatorIBM());
+    registerProvider(new EvaluatorHAPI_R5());
   }
 
   @Override
@@ -24,8 +23,8 @@ public class FhirService extends RestfulServer {
   }
 
   @Bean
-  public ServletRegistrationBean fhirServlet() {
+  public ServletRegistrationBean fhirServletR5() {
     return new ServletRegistrationBean(
-        new FhirService(), "/fhir/*");
+        new FhirService_R5(), "/fhir5/*");
   }
 }

@@ -27,11 +27,7 @@ Content-Type: application/json
             "name": "resource"
         },
         {
-            "valueString": "Patient.name",
-            "name": "expression"
-        },
-        {
-            "valueString": "trace('Patient.given')",
+            "valueString": "Patient.trace('given', given).name",
             "name": "expression"
         }
     ]
