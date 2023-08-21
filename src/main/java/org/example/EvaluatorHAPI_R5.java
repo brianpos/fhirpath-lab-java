@@ -17,6 +17,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.hapi.ctx.HapiWorkerContext;
 import org.hl7.fhir.r5.model.Parameters;
 import org.hl7.fhir.r5.model.StringType;
@@ -33,7 +34,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 public class EvaluatorHAPI_R5 {
 
   private FhirContext ctx = FhirContext.forR5();
-  private HapiWorkerContext _workerContext = new HapiWorkerContext(ctx, new DefaultProfileValidationSupport(ctx));
+  private IWorkerContext _workerContext = new HapiWorkerContext(ctx, new DefaultProfileValidationSupport(ctx));
 
   @Operation(name = "fhirpath-r5", idempotent = true, returnParameters = {
       @OperationParam(name = "resource", min = 1),
@@ -54,7 +55,7 @@ public class EvaluatorHAPI_R5 {
       Parameters.ParametersParameterComponent paramsPart = (Parameters.ParametersParameterComponent) ParametersUtil
           .addParameterToParameters(ctx, responseParameters,
               "parameters");
-      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.6.2 (r5)");
+      ParametersUtil.addPartString(ctx, paramsPart, "evaluator", "HAPI-6.8.0 (r5)");
       if (contextExpression != null)
         ParametersUtil.addPartString(ctx, paramsPart, "context", contextExpression);
       ParametersUtil.addPartString(ctx, paramsPart, "expression", expression);
