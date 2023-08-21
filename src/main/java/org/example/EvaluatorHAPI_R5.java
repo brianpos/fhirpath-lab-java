@@ -114,7 +114,7 @@ public class EvaluatorHAPI_R5 {
         List<org.hl7.fhir.r5.model.Base> outputs;
         try {
           services.traceToParameter = resultPart;
-          outputs = engine.evaluate(ctx, (org.hl7.fhir.r5.model.Resource)resource, (org.hl7.fhir.r5.model.Resource)resource, node, expression);
+          outputs = engine.evaluate(node, expression);
         } catch (FhirPathExecutionException e) {
           throw new InvalidRequestException(
               Msg.code(327) + "Error parsing FHIRPath expression: " + e.getMessage());
