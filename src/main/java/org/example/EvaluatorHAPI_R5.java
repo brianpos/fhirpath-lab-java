@@ -6,6 +6,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.support.DefaultProfileValidationSupport;
 import ca.uhn.fhir.fhirpath.FhirPathExecutionException;
 import ca.uhn.fhir.fhirpath.IFhirPath;
+import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.i18n.Msg;
 import ca.uhn.fhir.rest.annotation.Operation;
 import ca.uhn.fhir.rest.annotation.OperationParam;
@@ -62,10 +63,10 @@ public class EvaluatorHAPI_R5 {
       ParametersUtil.addPartResource(ctx, paramsPart, "resource", resource);
 
       IFhirPath fhirPath = ctx.newFhirPath();
-      // ca.uhn.fhir.parser.IParser parser = ctx.newJsonParser();
+      IParser parser = ctx.newJsonParser();
 
       org.hl7.fhir.r5.utils.FHIRPathEngine engine = new org.hl7.fhir.r5.utils.FHIRPathEngine(
-        _workerContext);
+          _workerContext);
       FHIRPathTestEvaluationServices_R5 services = new FHIRPathTestEvaluationServices_R5();
       engine.setHostServices(services);
 
@@ -104,7 +105,7 @@ public class EvaluatorHAPI_R5 {
       }
 
       for (int i = 0; i < contextOutputs.size(); i++) {
-        org.hl7.fhir.r5.model.Base node = (org.hl7.fhir.r5.model.Base)contextOutputs.get(i);
+        org.hl7.fhir.r5.model.Base node = (org.hl7.fhir.r5.model.Base) contextOutputs.get(i);
         Parameters.ParametersParameterComponent resultPart = (Parameters.ParametersParameterComponent) ParametersUtil
             .addParameterToParameters(ctx, responseParameters,
                 "result");
@@ -123,6 +124,12 @@ public class EvaluatorHAPI_R5 {
         for (IBase nextOutput : outputs) {
           if (nextOutput instanceof IBaseResource) {
             ParametersUtil.addPartResource(ctx, resultPart, nextOutput.fhirType(), (IBaseResource) nextOutput);
+          } else if (nextOutput instanceof org.hl7.fhir.r5.model.BackboneElement) {
+            Parameters.ParametersParameterComponent backboneValue = resultPart.addPart();
+            backboneValue.setName(nextOutput.fhirType());
+            String backboneJson = parser.encodeToString(nextOutput);
+            backboneValue.addExtension("http://fhir.forms-lab.com/StructureDefinition/json-value",
+                new StringType(backboneJson));
           } else {
             try {
               ParametersUtil.addPart(ctx, resultPart, nextOutput.fhirType(), nextOutput);
@@ -173,12 +180,17 @@ public class EvaluatorHAPI_R5 {
         Parameters.ParametersParameterComponent traceValue = traceToParameter.addPart();
         traceValue.setName("trace");
         traceValue.setValue(new StringType(argument));
+        IParser parser = ctx.newJsonParser();
 
         for (IBase nextOutput : data) {
           if (nextOutput instanceof IBaseResource) {
             ParametersUtil.addPartResource(ctx, traceValue, nextOutput.fhirType(), (IBaseResource) nextOutput);
           } else if (nextOutput instanceof org.hl7.fhir.r5.model.BackboneElement) {
-            ParametersUtil.addPart(ctx, traceValue, nextOutput.fhirType(), new StringType("<< Type Not Supported >>"));
+            Parameters.ParametersParameterComponent backboneValue = traceValue.addPart();
+            backboneValue.setName(nextOutput.fhirType());
+            String backboneJson = parser.encodeToString(nextOutput);
+            backboneValue.addExtension("http://fhir.forms-lab.com/StructureDefinition/json-value",
+                new StringType(backboneJson));
           } else {
             // if ( netOutput instanceOf org.hl7.fhir.r5.model.BackboneElement)
             try {
@@ -216,7 +228,8 @@ public class EvaluatorHAPI_R5 {
     }
 
     @Override
-    public org.hl7.fhir.r5.model.Base resolveReference(Object appContext, String url, org.hl7.fhir.r5.model.Base refContext) throws FHIRException {
+    public org.hl7.fhir.r5.model.Base resolveReference(Object appContext, String url,
+        org.hl7.fhir.r5.model.Base refContext) throws FHIRException {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices_R5.resolveReference), when item is element");
     }

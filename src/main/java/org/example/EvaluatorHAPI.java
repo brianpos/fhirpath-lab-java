@@ -6,6 +6,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.support.DefaultProfileValidationSupport;
 import ca.uhn.fhir.fhirpath.FhirPathExecutionException;
 import ca.uhn.fhir.fhirpath.IFhirPath;
+import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.i18n.Msg;
 import ca.uhn.fhir.rest.annotation.Operation;
 import ca.uhn.fhir.rest.annotation.OperationParam;
@@ -16,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-
 
 import org.hl7.fhir.r4b.context.IWorkerContext;
 import org.hl7.fhir.r4b.hapi.ctx.HapiWorkerContext;
@@ -63,7 +63,7 @@ public class EvaluatorHAPI {
       ParametersUtil.addPartResource(ctx, paramsPart, "resource", resource);
 
       IFhirPath fhirPath = ctx.newFhirPath();
-      // ca.uhn.fhir.parser.IParser parser = ctx.newJsonParser();
+      IParser parser = ctx.newJsonParser();
 
       org.hl7.fhir.r4b.utils.FHIRPathEngine engine = new org.hl7.fhir.r4b.utils.FHIRPathEngine(
           _workerContext);
@@ -124,6 +124,12 @@ public class EvaluatorHAPI {
         for (IBase nextOutput : outputs) {
           if (nextOutput instanceof IBaseResource) {
             ParametersUtil.addPartResource(ctx, resultPart, nextOutput.fhirType(), (IBaseResource) nextOutput);
+          } else if (nextOutput instanceof org.hl7.fhir.r4b.model.BackboneElement) {
+            Parameters.ParametersParameterComponent backboneValue = resultPart.addPart();
+            backboneValue.setName(nextOutput.fhirType());
+            String backboneJson = parser.encodeToString(nextOutput);
+            backboneValue.addExtension("http://fhir.forms-lab.com/StructureDefinition/json-value",
+                new StringType(backboneJson));
           } else {
             try {
               if (nextOutput instanceof StringType) {
@@ -182,12 +188,17 @@ public class EvaluatorHAPI {
         Parameters.ParametersParameterComponent traceValue = traceToParameter.addPart();
         traceValue.setName("trace");
         traceValue.setValue(new StringType(argument));
+        IParser parser = ctx.newJsonParser();
 
         for (IBase nextOutput : data) {
           if (nextOutput instanceof IBaseResource) {
             ParametersUtil.addPartResource(ctx, traceValue, nextOutput.fhirType(), (IBaseResource) nextOutput);
           } else if (nextOutput instanceof org.hl7.fhir.r4b.model.BackboneElement) {
-            ParametersUtil.addPart(ctx, traceValue, nextOutput.fhirType(), new StringType("<< Type Not Supported >>"));
+            Parameters.ParametersParameterComponent backboneValue = traceValue.addPart();
+            backboneValue.setName(nextOutput.fhirType());
+            String backboneJson = parser.encodeToString(nextOutput);
+            backboneValue.addExtension("http://fhir.forms-lab.com/StructureDefinition/json-value",
+                new StringType(backboneJson));
           } else {
             // if ( netOutput instanceOf org.hl7.fhir.r4b.model.BackboneElement)
             try {
