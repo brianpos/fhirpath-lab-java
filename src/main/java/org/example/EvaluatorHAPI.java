@@ -17,6 +17,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+
+import org.hl7.fhir.r4b.context.IWorkerContext;
 import org.hl7.fhir.r4b.hapi.ctx.HapiWorkerContext;
 import org.hl7.fhir.r4b.model.Parameters;
 import org.hl7.fhir.r4b.model.StringType;
@@ -33,7 +35,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 public class EvaluatorHAPI {
 
   private FhirContext ctx = FhirContext.forR4B();
-  private HapiWorkerContext _workerContext = new HapiWorkerContext(ctx, new DefaultProfileValidationSupport(ctx));
+  private IWorkerContext _workerContext = new HapiWorkerContext(ctx, new DefaultProfileValidationSupport(ctx));
 
   @Operation(name = "fhirpath", idempotent = true, returnParameters = {
       @OperationParam(name = "resource", min = 1),
