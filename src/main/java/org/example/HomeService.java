@@ -35,8 +35,8 @@ public class HomeService extends javax.servlet.http.HttpServlet {
   }
 
   @Bean
-  public ServletRegistrationBean homeServlet() {
-    return new ServletRegistrationBean(
+  public ServletRegistrationBean<HomeService> homeServlet() {
+    return new ServletRegistrationBean<HomeService>(
         new HomeService(), "/");
   }
 }

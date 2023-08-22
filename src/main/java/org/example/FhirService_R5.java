@@ -23,8 +23,8 @@ public class FhirService_R5 extends RestfulServer {
   }
 
   @Bean
-  public ServletRegistrationBean fhirServletR5() {
-    return new ServletRegistrationBean(
+  public ServletRegistrationBean<FhirService_R5> fhirServletR5() {
+    return new ServletRegistrationBean<FhirService_R5>(
         new FhirService_R5(), "/fhir5/*");
   }
 }
