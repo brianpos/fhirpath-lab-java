@@ -13,9 +13,8 @@ public class FhirService extends RestfulServer {
 
   public FhirService() {
     super(FhirContext.forR4B());
-
-    registerProvider(new EvaluatorHAPI());
-    registerProvider(new EvaluatorIBM());
+    registerProvider(new EvaluatorHAPI(this.getFhirContext()));
+    registerProvider(new EvaluatorIBM(this.getFhirContext()));
   }
 
   @Override

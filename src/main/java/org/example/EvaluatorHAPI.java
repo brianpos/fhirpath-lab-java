@@ -34,8 +34,12 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 
 public class EvaluatorHAPI {
 
-  private FhirContext ctx = FhirContext.forR4B();
-  private IWorkerContext _workerContext = new HapiWorkerContext(ctx, new DefaultProfileValidationSupport(ctx));
+  public EvaluatorHAPI(FhirContext context){
+    ctx = context;
+    _workerContext = new HapiWorkerContext(ctx, new DefaultProfileValidationSupport(ctx));
+  }
+  private FhirContext ctx;
+  private IWorkerContext _workerContext;
 
   @Operation(name = "fhirpath", idempotent = true, returnParameters = {
       @OperationParam(name = "resource", min = 1),

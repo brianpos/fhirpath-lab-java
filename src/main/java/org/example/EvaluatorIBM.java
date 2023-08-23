@@ -44,7 +44,11 @@ import com.ibm.fhir.model.resource.Resource;
 
 public class EvaluatorIBM {
 
-  private FhirContext ctx = FhirContext.forR4B();
+  public EvaluatorIBM(FhirContext context)
+  {
+    ctx = context;
+  }
+  private FhirContext ctx;
 
   @Operation(name = "fhirpath-ibm", idempotent = true, returnParameters = {
       @OperationParam(name = "resource", min = 1),

@@ -14,7 +14,7 @@ public class FhirService_R5 extends RestfulServer {
   public FhirService_R5() {
     super(FhirContext.forR5());
 
-    registerProvider(new EvaluatorHAPI_R5());
+    registerProvider(new EvaluatorHAPI_R5(this.getFhirContext()));
   }
 
   @Override
