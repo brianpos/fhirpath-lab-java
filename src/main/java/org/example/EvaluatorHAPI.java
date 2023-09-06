@@ -170,7 +170,9 @@ public class EvaluatorHAPI {
       if (mapVariables != null) {
         if (mapVariables.containsKey(name)) {
           List<org.hl7.fhir.r4b.model.Base> result = new java.util.ArrayList<org.hl7.fhir.r4b.model.Base>();
-          result.add(mapVariables.get(name));
+          org.hl7.fhir.r4b.model.Base itemValue = mapVariables.get(name);
+          if (itemValue != null)
+            result.add(itemValue);
           return result;
         }
         // return null; // don't return null as the lack of the variable being defined
