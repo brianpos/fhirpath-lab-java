@@ -7,6 +7,11 @@ Build it with
 
 ## Changelog
 
+### 2 November 2023
+* Update to the HAPI 6.8.5 engine
+* Add support for the FHIR Mapping Engine
+* Share the worker context property more widely (more efficient use of memory)
+
 ### 7 September 2023
 * Correct null reference exception when processing variables that have no value provided
 

@@ -1,0 +1,50 @@
+# POST http: //localhost:7071/api/$fhirpath
+POST http://localhost:8080/fhir/$transform?debug=true
+Content-Type: application/json
+
+{
+    "resourceType": "Parameters",
+    "parameter": [
+        {
+            "name": "map",
+            "valueString": "map \"http://fhirpath-lab.com/StructureMap/intro-patient-map\" = \"IntroPatientMap\"\r\n\r\nuses \"http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse\" as source\r\nuses \"http://hl7.org/fhir/StructureDefinition/Patient\" as target\r\n\r\ngroup patientMap(source src : QuestionnaireResponse, target patient : Patient)\r\n{\r\n src.item as item where linkId = 'preferred-language' log('yep') -> patient.communication as patientCommunication then {\r\n        item.answer as lanAnswer -> patientCommunication.language as concept then\r\n        {\r\n            lanAnswer.value -> concept.coding \"r_en_cc_cod\";\r\n            lanAnswer -> concept.text = evaluate(lanAnswer, value.display) \"r_pat_comm_concept_text\";\r\n        } \"r_patient_comm_lang\";\r\n        item -> patientCommunication.preferred = true \"rule_pat_comm_pref_bool\";\r\n    } \"rule_patient_communication_language\";\r\n}\r\n\r\ngroup copy_coding(source src : Coding, target tgt : Coding) <<types>> {\r\n  src -> tgt.system = evaluate(src, system),\r\n             tgt.code = evaluate(src, code),\r\n             tgt.display = evaluate(src, display)\r\n             \"coding prop\";\r\n}\r\n"
+        },
+        {
+            "name": "resource",
+            "resource": {
+                "resourceType": "QuestionnaireResponse",
+                "id": "a3d025a72ccd4a418fb37518949ccf78",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2023-10-12T04:49:39.5565677+00:00"
+                },
+                "text": {
+                    "status": "generated",
+                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><!-- populated from the rendered HTML below --></div>"
+                },
+                "questionnaire": "Questionnaire/coding-sampler",
+                "status": "completed",
+                "subject": {
+                    "reference": "Patient/example",
+                    "display": "Chalmers, Peter James"
+                },
+                "authored": "2023-10-12T04:55:08.071Z",
+                "item": [
+                    {
+                        "linkId": "preferred-language",
+                        "text": "Preferred Language",
+                        "answer": [
+                            {
+                                "valueCoding": {
+                                    "system": "urn:ietf:bcp:47",
+                                    "code": "en",
+                                    "display": "English"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

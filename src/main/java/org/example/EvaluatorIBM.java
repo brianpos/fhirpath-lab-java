@@ -17,6 +17,7 @@ import org.hl7.fhir.r4b.model.DecimalType;
 import org.hl7.fhir.r4b.model.IntegerType;
 import org.hl7.fhir.r4b.model.Parameters;
 import org.hl7.fhir.r4b.model.StringType;
+import org.hl7.fhir.r4b.context.IWorkerContext;
 import org.hl7.fhir.instance.model.api.IBaseParameters;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
@@ -44,7 +45,7 @@ import com.ibm.fhir.model.resource.Resource;
 
 public class EvaluatorIBM {
 
-  public EvaluatorIBM(FhirContext context)
+  public EvaluatorIBM(FhirContext context, IWorkerContext workerContext)
   {
     ctx = context;
   }
