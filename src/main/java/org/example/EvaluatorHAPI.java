@@ -32,6 +32,7 @@ import org.hl7.fhir.r4b.model.TypeDetails;
 import org.hl7.fhir.r4b.utils.FHIRPathEngine.IEvaluationContext;
 import org.hl7.fhir.r4b.utils.structuremap.StructureMapUtilities;
 import org.hl7.fhir.r4b.utils.structuremap.ITransformerServices;
+import org.hl7.fhir.r4b.utils.FHIRPathUtilityClasses.FunctionDetails;
 
 
 import org.apache.commons.lang3.NotImplementedException;
