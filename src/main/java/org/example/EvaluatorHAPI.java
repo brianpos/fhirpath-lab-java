@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.hl7.fhir.r4b.elementmodel.Manager;
 import org.hl7.fhir.r4b.context.IWorkerContext;

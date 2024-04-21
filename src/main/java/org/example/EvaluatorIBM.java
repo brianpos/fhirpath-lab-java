@@ -10,7 +10,7 @@ import ca.uhn.fhir.rest.annotation.OperationParam;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.util.ParametersUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.hl7.fhir.r4b.model.BooleanType;
 import org.hl7.fhir.r4b.model.DecimalType;

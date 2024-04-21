@@ -3,9 +3,9 @@ package org.example;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Service;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 
 /* This simple service is included just to return valid content for the system health tracker */
 @Service
-public class HomeService extends javax.servlet.http.HttpServlet {
+public class HomeService extends jakarta.servlet.http.HttpServlet {
 
   public HomeService() {
     super();

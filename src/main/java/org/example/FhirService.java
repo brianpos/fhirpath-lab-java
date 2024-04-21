@@ -6,7 +6,7 @@ import ca.uhn.fhir.rest.server.RestfulServer;
 
 import java.util.Arrays;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.hl7.fhir.r4b.context.IWorkerContext;
 import org.hl7.fhir.r4b.hapi.ctx.HapiWorkerContext;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class FhirService extends RestfulServer {
 
-  static final String hapiVersion = "HAPI-6.10.2";
+  static final String hapiVersion = "HAPI-7.0.2";
   
   public FhirService() {
     super(FhirContext.forR4B());
