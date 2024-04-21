@@ -34,6 +34,9 @@ import org.hl7.fhir.r4b.utils.structuremap.StructureMapUtilities;
 import org.hl7.fhir.r4b.utils.structuremap.ITransformerServices;
 import org.hl7.fhir.r4b.utils.FHIRPathUtilityClasses.FunctionDetails;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.exceptions.FHIRException;
@@ -103,6 +106,32 @@ public class EvaluatorHAPI {
             }
           }
         }
+      }
+
+      // Parse out the expression tree for the debug output
+      try {
+        org.hl7.fhir.r4b.model.ExpressionNode parseTree;
+        // if (contextExpression != null)
+        // parseTree = engine.parse(contextExpression, expression);
+        // else
+        parseTree = engine.parse(expression);
+        SimplifiedExpressionNode simplifiedAST = SimplifiedExpressionNode.From(parseTree);
+        JsonNode nodeParse = AstMapper.From(simplifiedAST);
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.setSerializationInclusion(Include.NON_NULL);
+
+        String jsonAstTree = objectMapper.writeValueAsString(nodeParse);
+        // System.out.println(jsonAstTree);
+        ParametersUtil.addPartString(_ctx, paramsPart, "parseDebugTree", jsonAstTree);
+
+        String jsonAstTree2 = objectMapper.writeValueAsString(simplifiedAST);
+        // System.out.println(jsonAstTree2);
+        ParametersUtil.addPartString(_ctx, paramsPart, "parseDebugTreeJava", jsonAstTree2);
+
+      } catch (IOException ex) {
+        System.out.println(ex.getMessage());
       }
 
       // locate all of the context objects
@@ -304,7 +333,7 @@ public class EvaluatorHAPI {
     }
   }
 
-  private class FHIRPathTestEvaluationServices implements IEvaluationContext {
+  public class FHIRPathTestEvaluationServices implements IEvaluationContext {
     public Parameters.ParametersParameterComponent traceToParameter;
     public java.util.HashMap<String, org.hl7.fhir.r4b.model.Base> mapVariables;
 

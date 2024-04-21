@@ -13,6 +13,7 @@ import ca.uhn.fhir.rest.annotation.OperationParam;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.util.ParametersUtil;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -92,6 +93,33 @@ public class EvaluatorHAPI_R5 {
             }
           }
         }
+      }
+
+
+      // Parse out the expression tree for the debug output
+      try {
+        org.hl7.fhir.r5.model.ExpressionNode parseTree;
+        // if (contextExpression != null)
+        // parseTree = engine.parse(contextExpression, expression);
+        // else
+        parseTree = engine.parse(expression);
+        SimplifiedExpressionNode simplifiedAST = SimplifiedExpressionNode.From(parseTree);
+        JsonNode nodeParse = AstMapper.From(simplifiedAST);
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.setSerializationInclusion(Include.NON_NULL);
+
+        String jsonAstTree = objectMapper.writeValueAsString(nodeParse);
+        // System.out.println(jsonAstTree);
+        ParametersUtil.addPartString(ctx, paramsPart, "parseDebugTree", jsonAstTree);
+
+        String jsonAstTree2 = objectMapper.writeValueAsString(simplifiedAST);
+        // System.out.println(jsonAstTree2);
+        ParametersUtil.addPartString(ctx, paramsPart, "parseDebugTreeJava", jsonAstTree2);
+
+      } catch (IOException ex) {
+        System.out.println(ex.getMessage());
       }
 
       // locate all of the context objects

@@ -81,13 +81,17 @@ public class SimplifiedExpressionNode implements ISimplifiedExpressionNode {
         if (node == null)
             return null;
         SimplifiedExpressionNode jsonNode = new SimplifiedExpressionNode();
-        jsonNode.uniqueId = node.getUniqueId();
+        // jsonNode.uniqueId = node.getUniqueId();
         jsonNode.kind = node.getKind().toString();
         if (node.getKind() == org.hl7.fhir.r4b.model.ExpressionNode.Kind.Name
                 || node.getKind() == org.hl7.fhir.r4b.model.ExpressionNode.Kind.Function
                         && (node.getFunction() == null || node.getFunction().toCode() == null))
             jsonNode.name = node.getName();
-        jsonNode.constant = ConvertConstantToString(node.getConstant());
+        var constVal = ConvertConstantToString(node.getConstant());
+        if (constVal != null) {
+            jsonNode.constant = constVal.value;
+            jsonNode.types = constVal.type;
+        }
         if (node.getFunction() != null)
             jsonNode.function = node.getFunction().toCode();
 
@@ -126,7 +130,11 @@ public class SimplifiedExpressionNode implements ISimplifiedExpressionNode {
                 || node.getKind() == org.hl7.fhir.r5.model.ExpressionNode.Kind.Function
                         && (node.getFunction() == null || node.getFunction().toCode() == null))
             jsonNode.name = node.getName();
-        jsonNode.constant = ConvertConstantToString(node.getConstant());
+        var constVal = ConvertConstantToString(node.getConstant());
+        if (constVal != null) {
+            jsonNode.constant = constVal.value;
+            jsonNode.types = constVal.type;
+        }
         if (node.getFunction() != null)
             jsonNode.function = node.getFunction().toCode();
 
@@ -155,58 +163,70 @@ public class SimplifiedExpressionNode implements ISimplifiedExpressionNode {
         return jsonNode;
     }
 
-    static String ConvertConstantToString(org.hl7.fhir.r4b.model.Base constant) {
+    static class TypedValue {
+        public static TypedValue Create(String type, String value) {
+            TypedValue tv = new TypedValue();
+            tv.type = type;
+            tv.value = value;
+            return tv;
+        }
+
+        public String type;
+        public String value;
+    }
+
+    static TypedValue ConvertConstantToString(org.hl7.fhir.r4b.model.Base constant) {
         if (constant == null)
             return null;
 
         StringBuilder b = new StringBuilder();
         if (constant instanceof org.hl7.fhir.r4b.model.StringType) {
-            b.append("'" + Utilities.escapeJson(constant.primitiveValue()) + "'");
+            b.append(constant.primitiveValue());
         } else if (constant instanceof org.hl7.fhir.r4b.model.Quantity) {
             org.hl7.fhir.r4b.model.Quantity q = (org.hl7.fhir.r4b.model.Quantity) constant;
-            b.append(Utilities.escapeJson(q.getValue().toPlainString()));
+            b.append(q.getValue().toPlainString());
             if (q.hasUnit() || q.hasCode()) {
                 b.append(" '");
                 if (q.hasUnit()) {
-                    b.append(Utilities.escapeJson(q.getUnit()));
+                    b.append(q.getUnit());
                 } else {
-                    b.append(Utilities.escapeJson(q.getCode()));
+                    b.append(q.getCode());
                 }
                 b.append("'");
             }
         } else if (constant.primitiveValue() != null) {
-            b.append(Utilities.escapeJson(constant.primitiveValue()));
+            b.append(constant.primitiveValue());
         } else {
             b.append(Utilities.escapeJson(constant.toString()));
         }
-        return b.toString();
+        return TypedValue.Create(constant.fhirType(), b.toString());
     }
 
-    static String ConvertConstantToString(org.hl7.fhir.r5.model.Base constant) {
+    static TypedValue ConvertConstantToString(org.hl7.fhir.r5.model.Base constant) {
         if (constant == null)
             return null;
 
         StringBuilder b = new StringBuilder();
         if (constant instanceof org.hl7.fhir.r5.model.StringType) {
-            b.append("'" + Utilities.escapeJson(constant.primitiveValue()) + "'");
+            b.append(constant.primitiveValue());
         } else if (constant instanceof org.hl7.fhir.r5.model.Quantity) {
             org.hl7.fhir.r5.model.Quantity q = (org.hl7.fhir.r5.model.Quantity) constant;
-            b.append(Utilities.escapeJson(q.getValue().toPlainString()));
+            b.append(q.getValue().toPlainString());
             if (q.hasUnit() || q.hasCode()) {
                 b.append(" '");
                 if (q.hasUnit()) {
-                    b.append(Utilities.escapeJson(q.getUnit()));
+                    b.append(q.getUnit());
                 } else {
-                    b.append(Utilities.escapeJson(q.getCode()));
+                    b.append(q.getCode());
                 }
                 b.append("'");
             }
         } else if (constant.primitiveValue() != null) {
-            b.append(Utilities.escapeJson(constant.primitiveValue()));
+            b.append(constant.primitiveValue());
         } else {
             b.append(Utilities.escapeJson(constant.toString()));
         }
-        return b.toString();
+        return TypedValue.Create(constant.fhirType(), b.toString());
     }
 
     @JsonProperty("Name")

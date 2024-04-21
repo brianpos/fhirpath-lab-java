@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hl7.fhir.r4b.model.ExpressionNode.Kind;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 interface IJsonNode extends Serializable {
@@ -26,12 +24,25 @@ interface IJsonNode extends Serializable {
     void setReturnType(String returnType);
 }
 
-class JsonNode implements IJsonNode {
+public class JsonNode implements IJsonNode {
     private String expressionType;
     private String name;
     private List<JsonNode> arguments;
     private String returnType;
 
+    public void insertArgument(JsonNode node) {
+        if (arguments == null)
+            arguments = new ArrayList<JsonNode>();
+        arguments.add(0, node);
+    }
+
+    public void appendArgument(JsonNode node) {
+        if (arguments == null)
+            arguments = new ArrayList<JsonNode>();
+        arguments.add(node);
+    }
+
+    @Override
     public String getExpressionType() {
         return expressionType;
     }
@@ -72,6 +83,9 @@ class JsonNode implements IJsonNode {
     @JsonProperty("ReturnType")
     @Override
     public void setReturnType(String returnType) {
-        this.returnType = returnType;
+        if (returnType != null && returnType.length() == 0)
+            this.returnType = " ";
+        else
+            this.returnType = returnType;
     }
 }
