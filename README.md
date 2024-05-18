@@ -7,6 +7,9 @@ Build it with
 
 ## Changelog
 
+### 18 May 2024
+* Update to the HAPI 7.2.0 engine
+
 ### 2 November 2023
 * Update to the HAPI 6.8.5 engine
 * Add support for the FHIR Mapping Engine
