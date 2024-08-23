@@ -14,19 +14,24 @@ import java.nio.charset.Charset;
 import ca.uhn.fhir.context.FhirContext;
 import org.hl7.fhir.r4b.context.IWorkerContext;
 import org.hl7.fhir.r4b.hapi.ctx.HapiWorkerContext;
+import org.hl7.fhir.r4b.model.Parameters;
+import org.hl7.fhir.r4b.model.Patient;
+
 import ca.uhn.fhir.context.support.DefaultProfileValidationSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 
-public class AstMapperTest {
+class AstMapperTest {
     AstMapperTest() {
         var fhirContext = FhirContext.forR4B();
+        _ctx = fhirContext;
         IWorkerContext workerContext = new HapiWorkerContext(fhirContext,
                 new DefaultProfileValidationSupport(fhirContext));
+        _workerContext = workerContext;
 
-        _engine = new org.hl7.fhir.r4b.utils.FHIRPathEngine(workerContext);
+        _engine = new org.hl7.fhir.r4b.fhirpath.FHIRPathEngine(workerContext);
         // FHIRPathTestEvaluationServices services = new
         // FHIRPathTestEvaluationServices();
         // engine.setHostServices(services);
@@ -38,7 +43,10 @@ public class AstMapperTest {
         _objectMapper.setDefaultPrettyPrinter(_prettyPrinter);
     }
 
-    org.hl7.fhir.r4b.utils.FHIRPathEngine _engine;
+    private FhirContext _ctx;
+    private IWorkerContext _workerContext;
+
+    org.hl7.fhir.r4b.fhirpath.FHIRPathEngine _engine;
     ObjectMapper _objectMapper;
     DefaultPrettyPrinter _prettyPrinter;
 

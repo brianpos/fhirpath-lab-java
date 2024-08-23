@@ -3,7 +3,7 @@ package org.example;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hl7.fhir.r4b.model.ExpressionNode.Kind;
+import org.hl7.fhir.r4b.fhirpath.ExpressionNode.Kind;
 
 public class AstMapper {
 
@@ -161,7 +161,7 @@ public class AstMapper {
         return result;
     }
 
-    static public JsonNode From(org.hl7.fhir.r4b.model.ExpressionNode node) {
+    static public JsonNode From(org.hl7.fhir.r4b.fhirpath.ExpressionNode node) {
         JsonNode jsonNode = new JsonNode();
         if (node.getKind() == Kind.Name)
             jsonNode.setExpressionType("ChildExpression");
@@ -178,7 +178,7 @@ public class AstMapper {
         List<JsonNode> args = new ArrayList<JsonNode>();
         jsonNode.setArguments(args);
         if (node.getParameters() != null) {
-            for (org.hl7.fhir.r4b.model.ExpressionNode arg : node.getParameters()) {
+            for (org.hl7.fhir.r4b.fhirpath.ExpressionNode arg : node.getParameters()) {
                 args.add(From(arg));
             }
         }
@@ -204,7 +204,7 @@ public class AstMapper {
         return jsonNode;
     }
 
-    static public JsonNode From(org.hl7.fhir.r5.model.ExpressionNode node) {
+    static public JsonNode From(org.hl7.fhir.r5.fhirpath.ExpressionNode node) {
         JsonNode jsonNode = new JsonNode();
         if (node.getKind() == org.hl7.fhir.r5.model.ExpressionNode.Kind.Name)
             jsonNode.setExpressionType("ChildExpression");
@@ -221,7 +221,7 @@ public class AstMapper {
         List<JsonNode> args = new ArrayList<JsonNode>();
         jsonNode.setArguments(args);
         if (node.getParameters() != null) {
-            for (org.hl7.fhir.r5.model.ExpressionNode arg : node.getParameters()) {
+            for (org.hl7.fhir.r5.fhirpath.ExpressionNode arg : node.getParameters()) {
                 args.add(From(arg));
             }
         }

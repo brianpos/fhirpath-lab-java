@@ -28,11 +28,12 @@ import org.hl7.fhir.r4b.model.Parameters;
 import org.hl7.fhir.r4b.model.StructureMap;
 import org.hl7.fhir.r4b.model.StructureDefinition;
 import org.hl7.fhir.r4b.model.StringType;
-import org.hl7.fhir.r4b.model.TypeDetails;
-import org.hl7.fhir.r4b.utils.FHIRPathEngine.IEvaluationContext;
+import org.hl7.fhir.r4b.fhirpath.FHIRPathEngine;
+import org.hl7.fhir.r4b.fhirpath.TypeDetails;
+import org.hl7.fhir.r4b.fhirpath.FHIRPathEngine.IEvaluationContext;
 import org.hl7.fhir.r4b.utils.structuremap.StructureMapUtilities;
 import org.hl7.fhir.r4b.utils.structuremap.ITransformerServices;
-import org.hl7.fhir.r4b.utils.FHIRPathUtilityClasses.FunctionDetails;
+import org.hl7.fhir.r4b.fhirpath.FHIRPathUtilityClasses.FunctionDetails;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -83,7 +84,7 @@ public class EvaluatorHAPI {
       IFhirPath fhirPath = _ctx.newFhirPath();
       IParser parser = _ctx.newJsonParser();
 
-      org.hl7.fhir.r4b.utils.FHIRPathEngine engine = new org.hl7.fhir.r4b.utils.FHIRPathEngine(
+      org.hl7.fhir.r4b.fhirpath.FHIRPathEngine engine = new org.hl7.fhir.r4b.fhirpath.FHIRPathEngine(
           _workerContext);
       FHIRPathTestEvaluationServices services = new FHIRPathTestEvaluationServices();
       engine.setHostServices(services);
@@ -110,7 +111,7 @@ public class EvaluatorHAPI {
 
       // Parse out the expression tree for the debug output
       try {
-        org.hl7.fhir.r4b.model.ExpressionNode parseTree;
+        org.hl7.fhir.r4b.fhirpath.ExpressionNode parseTree;
         // if (contextExpression != null)
         // parseTree = engine.parse(contextExpression, expression);
         // else
@@ -342,7 +343,7 @@ public class EvaluatorHAPI {
     }
 
     @Override
-    public List<org.hl7.fhir.r4b.model.Base> resolveConstant(Object appContext, String name, boolean beforeContext)
+    public List<org.hl7.fhir.r4b.model.Base> resolveConstant(FHIRPathEngine engine, Object appContext, String name, boolean beforeContext, boolean explicitConstant)
         throws PathEngineException {
       if (mapVariables != null) {
         if (mapVariables.containsKey(name)) {
@@ -360,7 +361,7 @@ public class EvaluatorHAPI {
     }
 
     @Override
-    public TypeDetails resolveConstantType(Object appContext, String name) throws PathEngineException {
+    public TypeDetails resolveConstantType(FHIRPathEngine engine, Object appContext, String name, boolean explicitConstant) throws PathEngineException {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices.resolveConstantType), when item is element: " + name);
     }
@@ -407,35 +408,35 @@ public class EvaluatorHAPI {
     }
 
     @Override
-    public FunctionDetails resolveFunction(String functionName) {
+    public FunctionDetails resolveFunction(FHIRPathEngine engine, String functionName) {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices.resolveFunction), when item is element (for " + functionName
               + ")");
     }
 
     @Override
-    public TypeDetails checkFunction(Object appContext, String functionName, List<TypeDetails> parameters)
-        throws PathEngineException {
+    public TypeDetails checkFunction(FHIRPathEngine engine, Object appContext, String functionName, TypeDetails focus,
+            List<TypeDetails> parameters) throws PathEngineException {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices.checkFunction), when item is element: " + functionName);
     }
 
     @Override
-    public List<org.hl7.fhir.r4b.model.Base> executeFunction(Object appContext, List<org.hl7.fhir.r4b.model.Base> focus,
+    public List<org.hl7.fhir.r4b.model.Base> executeFunction(FHIRPathEngine engine, Object appContext, List<org.hl7.fhir.r4b.model.Base> focus,
         String functionName, List<List<org.hl7.fhir.r4b.model.Base>> parameters) {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices.executeFunction), when item is element: " + functionName);
     }
 
     @Override
-    public org.hl7.fhir.r4b.model.Base resolveReference(Object appContext, String url,
+    public org.hl7.fhir.r4b.model.Base resolveReference(FHIRPathEngine engine, Object appContext, String url,
         org.hl7.fhir.r4b.model.Base refContext) throws FHIRException {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices.resolveReference), when item is element");
     }
 
     @Override
-    public boolean conformsToProfile(Object appContext, org.hl7.fhir.r4b.model.Base item, String url)
+    public boolean conformsToProfile(FHIRPathEngine engine, Object appContext, org.hl7.fhir.r4b.model.Base item, String url)
         throws FHIRException {
       // if (url.equals("http://hl7.org/fhir/StructureDefinition/Patient"))
       // return true;
@@ -445,7 +446,7 @@ public class EvaluatorHAPI {
     }
 
     @Override
-    public org.hl7.fhir.r4b.model.ValueSet resolveValueSet(Object appContext, String url) {
+    public org.hl7.fhir.r4b.model.ValueSet resolveValueSet(FHIRPathEngine engine, Object appContext, String url) {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices.resolveReference), when item is element");
     }

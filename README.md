@@ -7,6 +7,10 @@ Build it with
 
 ## Changelog
 
+### 23 August 2024
+* Update to the HAPI 7.4.0 engine
+*(Note this may be the last update as moving to a version that does not require the HAPI level libraries)*
+
 ### 18 May 2024
 * Update to the HAPI 7.2.0 engine
 

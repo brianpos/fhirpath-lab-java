@@ -23,9 +23,10 @@ import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.hapi.ctx.HapiWorkerContext;
 import org.hl7.fhir.r5.model.Parameters;
 import org.hl7.fhir.r5.model.StringType;
-import org.hl7.fhir.r5.model.TypeDetails;
-import org.hl7.fhir.r5.utils.FHIRPathEngine.IEvaluationContext;
-import org.hl7.fhir.r5.utils.FHIRPathUtilityClasses.FunctionDetails;
+import org.hl7.fhir.r5.fhirpath.FHIRPathEngine;
+import org.hl7.fhir.r5.fhirpath.TypeDetails;
+import org.hl7.fhir.r5.fhirpath.FHIRPathEngine.IEvaluationContext;
+import org.hl7.fhir.r5.fhirpath.FHIRPathUtilityClasses.FunctionDetails;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,7 +75,7 @@ public class EvaluatorHAPI_R5 {
       IFhirPath fhirPath = ctx.newFhirPath();
       IParser parser = ctx.newJsonParser();
 
-      org.hl7.fhir.r5.utils.FHIRPathEngine engine = new org.hl7.fhir.r5.utils.FHIRPathEngine(
+      org.hl7.fhir.r5.fhirpath.FHIRPathEngine engine = new org.hl7.fhir.r5.fhirpath.FHIRPathEngine(
           _workerContext);
       FHIRPathTestEvaluationServices_R5 services = new FHIRPathTestEvaluationServices_R5();
       engine.setHostServices(services);
@@ -102,7 +103,7 @@ public class EvaluatorHAPI_R5 {
 
       // Parse out the expression tree for the debug output
       try {
-        org.hl7.fhir.r5.model.ExpressionNode parseTree;
+        org.hl7.fhir.r5.fhirpath.ExpressionNode parseTree;
         // if (contextExpression != null)
         // parseTree = engine.parse(contextExpression, expression);
         // else
@@ -189,7 +190,7 @@ public class EvaluatorHAPI_R5 {
     }
 
     @Override
-    public List<org.hl7.fhir.r5.model.Base> resolveConstant(Object appContext, String name, boolean beforeContext)
+    public List<org.hl7.fhir.r5.model.Base> resolveConstant(FHIRPathEngine engine, Object appContext, String name, boolean beforeContext, boolean explicitConstant)
         throws PathEngineException {
       if (mapVariables != null) {
         if (mapVariables.containsKey(name)) {
@@ -207,7 +208,7 @@ public class EvaluatorHAPI_R5 {
     }
 
     @Override
-    public TypeDetails resolveConstantType(Object appContext, String name) throws PathEngineException {
+    public TypeDetails resolveConstantType(FHIRPathEngine engine, Object appContext, String name, boolean explicitConstant) throws PathEngineException {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices_R5.resolveConstantType), when item is element: " + name);
     }
@@ -245,35 +246,35 @@ public class EvaluatorHAPI_R5 {
     }
 
     @Override
-    public FunctionDetails resolveFunction(String functionName) {
+    public FunctionDetails resolveFunction(FHIRPathEngine engine, String functionName) {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices_R5.resolveFunction), when item is element (for " + functionName
               + ")");
     }
 
     @Override
-    public TypeDetails checkFunction(Object appContext, String functionName, List<TypeDetails> parameters)
+    public TypeDetails checkFunction(FHIRPathEngine engine, Object appContext, String functionName, TypeDetails focus, List<TypeDetails> parameters)
         throws PathEngineException {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices_R5.checkFunction), when item is element: " + functionName);
     }
 
     @Override
-    public List<org.hl7.fhir.r5.model.Base> executeFunction(Object appContext, List<org.hl7.fhir.r5.model.Base> focus,
+    public List<org.hl7.fhir.r5.model.Base> executeFunction(FHIRPathEngine engine, Object appContext, List<org.hl7.fhir.r5.model.Base> focus,
         String functionName, List<List<org.hl7.fhir.r5.model.Base>> parameters) {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices_R5.executeFunction), when item is element: " + functionName);
     }
 
     @Override
-    public org.hl7.fhir.r5.model.Base resolveReference(Object appContext, String url,
+    public org.hl7.fhir.r5.model.Base resolveReference(FHIRPathEngine engine, Object appContext, String url,
         org.hl7.fhir.r5.model.Base refContext) throws FHIRException {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices_R5.resolveReference), when item is element");
     }
 
     @Override
-    public boolean conformsToProfile(Object appContext, org.hl7.fhir.r5.model.Base item, String url)
+    public boolean conformsToProfile(FHIRPathEngine engine, Object appContext, org.hl7.fhir.r5.model.Base item, String url)
         throws FHIRException {
       // if (url.equals("http://hl7.org/fhir/StructureDefinition/Patient"))
       // return true;
@@ -283,9 +284,14 @@ public class EvaluatorHAPI_R5 {
     }
 
     @Override
-    public org.hl7.fhir.r5.model.ValueSet resolveValueSet(Object appContext, String url) {
+    public org.hl7.fhir.r5.model.ValueSet resolveValueSet(FHIRPathEngine engine, Object appContext, String url) {
       throw new NotImplementedException(
           "Not done yet (FHIRPathTestEvaluationServices_R5.resolveReference), when item is element");
+    }
+
+    @Override
+    public boolean paramIsType(String name, int index) {
+      throw new UnsupportedOperationException("Unimplemented method 'paramIsType'");
     }
   }
 }

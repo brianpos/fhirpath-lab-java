@@ -77,14 +77,14 @@ public class SimplifiedExpressionNode implements ISimplifiedExpressionNode {
     private String types;
     private String opTypes;
 
-    static public SimplifiedExpressionNode From(org.hl7.fhir.r4b.model.ExpressionNode node) {
+    static public SimplifiedExpressionNode From(org.hl7.fhir.r4b.fhirpath.ExpressionNode node) {
         if (node == null)
             return null;
         SimplifiedExpressionNode jsonNode = new SimplifiedExpressionNode();
         // jsonNode.uniqueId = node.getUniqueId();
         jsonNode.kind = node.getKind().toString();
-        if (node.getKind() == org.hl7.fhir.r4b.model.ExpressionNode.Kind.Name
-                || node.getKind() == org.hl7.fhir.r4b.model.ExpressionNode.Kind.Function
+        if (node.getKind() == org.hl7.fhir.r4b.fhirpath.ExpressionNode.Kind.Name
+                || node.getKind() == org.hl7.fhir.r4b.fhirpath.ExpressionNode.Kind.Function
                         && (node.getFunction() == null || node.getFunction().toCode() == null))
             jsonNode.name = node.getName();
         var constVal = ConvertConstantToString(node.getConstant());
@@ -97,8 +97,8 @@ public class SimplifiedExpressionNode implements ISimplifiedExpressionNode {
 
         var sp = node.getParameters();
         if (sp != null) {
-            jsonNode.parameters = new ArrayList<SimplifiedExpressionNode>();
-            for (org.hl7.fhir.r4b.model.ExpressionNode arg : node.getParameters()) {
+            jsonNode.parameters = new ArrayList<>();
+            for (org.hl7.fhir.r4b.fhirpath.ExpressionNode arg : node.getParameters()) {
                 jsonNode.parameters.add(From(arg));
             }
         }
@@ -120,14 +120,14 @@ public class SimplifiedExpressionNode implements ISimplifiedExpressionNode {
         return jsonNode;
     }
 
-    static public SimplifiedExpressionNode From(org.hl7.fhir.r5.model.ExpressionNode node) {
+    static public SimplifiedExpressionNode From(org.hl7.fhir.r5.fhirpath.ExpressionNode node) {
         if (node == null)
             return null;
         SimplifiedExpressionNode jsonNode = new SimplifiedExpressionNode();
         jsonNode.uniqueId = node.getUniqueId();
         jsonNode.kind = node.getKind().toString();
-        if (node.getKind() == org.hl7.fhir.r5.model.ExpressionNode.Kind.Name
-                || node.getKind() == org.hl7.fhir.r5.model.ExpressionNode.Kind.Function
+        if (node.getKind() == org.hl7.fhir.r5.fhirpath.ExpressionNode.Kind.Name
+                || node.getKind() == org.hl7.fhir.r5.fhirpath.ExpressionNode.Kind.Function
                         && (node.getFunction() == null || node.getFunction().toCode() == null))
             jsonNode.name = node.getName();
         var constVal = ConvertConstantToString(node.getConstant());
@@ -140,8 +140,8 @@ public class SimplifiedExpressionNode implements ISimplifiedExpressionNode {
 
         var sp = node.getParameters();
         if (sp != null) {
-            jsonNode.parameters = new ArrayList<SimplifiedExpressionNode>();
-            for (org.hl7.fhir.r5.model.ExpressionNode arg : node.getParameters()) {
+            jsonNode.parameters = new ArrayList<>();
+            for (org.hl7.fhir.r5.fhirpath.ExpressionNode arg : node.getParameters()) {
                 jsonNode.parameters.add(From(arg));
             }
         }
