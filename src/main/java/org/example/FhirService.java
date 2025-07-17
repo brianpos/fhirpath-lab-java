@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class FhirService extends RestfulServer {
 
-  static final String hapiVersion = "HAPI-7.4.0";
+  static final String hapiVersion = "HAPI-8.2.0";
   
   public FhirService() {
     super(FhirContext.forR4B());

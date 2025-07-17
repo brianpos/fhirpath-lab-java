@@ -19,7 +19,7 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <hapi.version>7.4.0</hapi.version>
+        <hapi.version>8.2.0</hapi.version>
     </properties>
 
     <build>
