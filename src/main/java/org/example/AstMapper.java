@@ -206,9 +206,9 @@ public class AstMapper {
 
     static public JsonNode From(org.hl7.fhir.r5.fhirpath.ExpressionNode node) {
         JsonNode jsonNode = new JsonNode();
-        if (node.getKind() == org.hl7.fhir.r5.model.ExpressionNode.Kind.Name)
+        if (node.getKind() == org.hl7.fhir.r5.fhirpath.ExpressionNode.Kind.Name)
             jsonNode.setExpressionType("ChildExpression");
-        else if (node.getKind() == org.hl7.fhir.r5.model.ExpressionNode.Kind.Function) {
+        else if (node.getKind() == org.hl7.fhir.r5.fhirpath.ExpressionNode.Kind.Function) {
             jsonNode.setExpressionType("FunctionExpression");
             jsonNode.setName(node.getFunction().toString());
         } else

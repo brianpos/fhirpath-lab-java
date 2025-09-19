@@ -7,6 +7,9 @@ Build it with
 
 ## Changelog
 
+### 19 September 2025
+* Update to the HAPI 8.4.0 engine (not planning on continuing this, but playing with CQL)
+
 ### 17 July 2025
 * Update to the HAPI 8.2.0 engine (not planning on continuing this, but playing with CQL)
 
