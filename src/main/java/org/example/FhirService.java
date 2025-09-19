@@ -24,6 +24,7 @@ public class FhirService extends RestfulServer {
     super(FhirContext.forR4B());
     IWorkerContext workerContext = new HapiWorkerContext(this.getFhirContext(), new DefaultProfileValidationSupport(this.getFhirContext()));
     registerProvider(new EvaluatorHAPI(this.getFhirContext(), workerContext));
+    registerProvider(new EvaluatorCQLFacade(this.getFhirContext()));
     registerProvider(new EvaluatorIBM(this.getFhirContext(), workerContext));
   }
 
