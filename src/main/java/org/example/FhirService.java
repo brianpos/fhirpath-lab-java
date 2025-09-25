@@ -25,7 +25,7 @@ public class FhirService extends RestfulServer {
     IWorkerContext workerContext = new HapiWorkerContext(this.getFhirContext(), new DefaultProfileValidationSupport(this.getFhirContext()));
     registerProvider(new EvaluatorHAPI(this.getFhirContext(), workerContext));
     registerProvider(new EvaluatorCQLFacade(this.getFhirContext()));
-    registerProvider(new EvaluatorIBM(this.getFhirContext(), workerContext));
+    // registerProvider(new EvaluatorIBM(this.getFhirContext(), workerContext));
   }
 
   @Override

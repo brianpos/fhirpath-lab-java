@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 
-@Service
+// @Service
 public class FhirService_R5 extends RestfulServer {
 
   public FhirService_R5() {
@@ -22,7 +22,7 @@ public class FhirService_R5 extends RestfulServer {
     super.initialize();
   }
 
-  @Bean
+  // @Bean
   public ServletRegistrationBean<FhirService_R5> fhirServletR5() {
     return new ServletRegistrationBean<FhirService_R5>(
         new FhirService_R5(), "/fhir5/*");
